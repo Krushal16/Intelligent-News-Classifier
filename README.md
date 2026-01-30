@@ -13,5 +13,14 @@ git config --global user.name "Your Name"
 
 git checkout dev
 python -m venv venv
-venv\Scripts\Activate
+
+# Windows PowerShell (recommended)
+```powershell
+# If scripts are blocked, enable for current user (no admin required):
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Activate the virtual environment (dot-source to affect current session):
+. .\venv\Scripts\Activate.ps1
+```
+
 pip install -r requirements.txt
