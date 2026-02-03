@@ -20,7 +20,11 @@ python -m venv venv
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 # Activate the virtual environment (dot-source to affect current session):
-. .\venv\Scripts\Activate.ps1
+ .\venv\Scripts\activate
 ```
 
+to install new library
 pip install -r requirements.txt
+
+to run project
+streamlit run app/app.py
