@@ -2,6 +2,7 @@
 import os
 import pandas as pd
 from typing import Tuple
+from sklearn.model_selection import train_test_split
 
 LABEL_MAP = {
     1: "World",
@@ -52,20 +53,26 @@ def load_ag_news_csv(
 
     return df
 
-
-def get_train_test(
+def get_train_val_test(
     train_csv: str = "data/raw/train.csv",
-    test_csv: str = "data/raw/test.csv"
-) -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
-    """
-    Load train and test splits from Kaggle CSVs and return X_train, y_train, X_test, y_test.
-    """
+    test_csv: str = "data/raw/test.csv",
+    val_size: float = 0.2,
+    random_state: int = 42
+):
     train_df = load_ag_news_csv(train_csv)
     test_df = load_ag_news_csv(test_csv)
 
-    X_train = train_df["text"]
-    y_train = train_df["label_id"]
+    X = train_df["text"]
+    y = train_df["label_id"]
+
+    X_train, X_val, y_train, y_val = train_test_split(
+        X, y,
+        test_size=val_size,
+        random_state=random_state,
+        stratify=y
+    )
+
     X_test = test_df["text"]
     y_test = test_df["label_id"]
 
-    return X_train, y_train, X_test, y_test
+    return X_train, X_val, X_test, y_train, y_val, y_test
