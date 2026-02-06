@@ -26,5 +26,8 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 to install new library
 pip install -r requirements.txt
 
+to run pipeline
+python run_pipeline.py
+
 to run project
 streamlit run app/app.py
