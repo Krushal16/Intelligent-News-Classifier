@@ -76,3 +76,12 @@ def get_train_val_test(
     y_test = test_df["label_id"]
 
     return X_train, X_val, X_test, y_train, y_val, y_test
+
+# src/data_loader.py
+def quick_split_stats(y_train, y_val, y_test):
+    import pandas as pd
+    return pd.DataFrame({
+        "train": pd.Series(y_train).value_counts().sort_index(),
+        "val": pd.Series(y_val).value_counts().sort_index(),
+        "test": pd.Series(y_test).value_counts().sort_index()
+    }).fillna(0).astype(int)
