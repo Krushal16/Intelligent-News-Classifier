@@ -23,11 +23,16 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
  .\venv\Scripts\activate
 ```
 
-to install new library
+# to install new library
 pip install -r requirements.txt
 
-to run pipeline
+# to run pipeline
 python run_pipeline.py
 
-to run project
+# to run project
 streamlit run app/app.py
+
+# week 4 model comparision 
+python -m src.tune
+# or
+python src/tune.py
