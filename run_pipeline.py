@@ -3,7 +3,7 @@ from src.data_loader import get_train_val_test
 from src.preprocess import apply_cleaning
 from src.train import train_models
 from src.evaluate import evaluate_model
-
+from src.tune import tune_and_save_best
 
 def main():
     # 1. Load data
@@ -31,6 +31,8 @@ def main():
             model_name=name
         )
 
+    best_path = tune_and_save_best()
+    print(f"Best model saved at: {best_path}")
 
 if __name__ == "__main__":
     main()

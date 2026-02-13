@@ -32,7 +32,11 @@ def score(model, X, y):
         "macro_f1": f1_score(y, pred, average="macro")
     }
 
-def main():
+def tune_and_save_best(
+    train_csv="data/raw/train.csv",
+    test_csv="data/raw/test.csv",
+    best_model_path="models/best_model.pkl"
+):
     X_train, X_val, X_test, y_train, y_val, y_test = get_train_val_test()
     X_train = apply_cleaning(X_train)
     X_val = apply_cleaning(X_val)
@@ -89,6 +93,8 @@ def main():
         "best_C": best["C"],
         **test_scores
     }]).to_csv("reports/metrics/week4_best_model_test_metrics.csv", index=False)
+    
+    return best_model_path
 
 if __name__ == "__main__":
-    main()
+    tune_and_save_best()
