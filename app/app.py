@@ -24,12 +24,35 @@ st.title("Intelligent News Classifier (AG News)")
 
 model = load_model()
 if model is None:
-    st.error("best_model.pkl not found. Run: python src/tune.py (or python run_pipeline.py) first.")
+    st.error("best_model.pkl not found. Run: python run_pipeline.py")
 else:
-    text = st.text_area("Enter news text:", height=200)
+    st.caption(f"Model loaded: {MODEL_PATH}")
+
+    example1 = "Stock markets rose today after strong earnings from major companies."
+    example2 = "The team secured a late victory in the championship match."
+    example3 = "Scientists announced a new breakthrough in AI research."
+
+    choice = st.selectbox("Load an example (optional):", ["(none)", "Example 1", "Example 2", "Example 3"])
+    if choice == "Example 1":
+        text = st.text_area("Enter news text:", value=example1, height=180)
+    elif choice == "Example 2":
+        text = st.text_area("Enter news text:", value=example2, height=180)
+    elif choice == "Example 3":
+        text = st.text_area("Enter news text:", value=example3, height=180)
+    else:
+        text = st.text_area("Enter news text:", height=180)
+
     if st.button("Predict"):
         if not text.strip():
             st.warning("Enter some text.")
         else:
-            pred = model.predict([clean_text(text)])[0]
-            st.success(f"Predicted category: {LABEL_MAP.get(pred, pred)}")
+            pred_id = model.predict([clean_text(text)])[0]
+            pred_name = LABEL_MAP.get(pred_id, str(pred_id))
+
+            msg = f"Predicted category: {pred_name}"
+
+            if hasattr(model, "predict_proba"):
+                conf = model.predict_proba([clean_text(text)]).max()
+                msg += f" (confidence: {conf:.2f})"
+
+            st.success(msg)
