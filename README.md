@@ -36,3 +36,18 @@ streamlit run app/app.py
 python -m src.tune
 # or
 python src/tune.py
+
+## Label Encoding
+This project uses the AG News dataset label mapping consistently across all modules.
+
+- 1 = World
+- 2 = Sports
+- 3 = Business
+- 4 = Sci/Tech
+
+The same encoding is used in:
+- data loading
+- model training
+- evaluation
+- misclassified sample reports
+- Streamlit demo
