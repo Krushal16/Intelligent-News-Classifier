@@ -1,87 +1,67 @@
-# src/data_loader.py
-import os
 import pandas as pd
-from typing import Tuple
 from sklearn.model_selection import train_test_split
 
-LABEL_MAP = {
-    1: "World",
-    2: "Sports",
-    3: "Business",
-    4: "Sci/Tech"
-}
 
-def load_ag_news_csv(
-    csv_path: str = "data/raw/ag_news.csv"
-) -> pd.DataFrame:
-    """
-    Load AG News CSV downloaded from Kaggle.
+def load_ag_news_csv(path):
+    df = pd.read_csv(path)
 
-    Expected columns (adjust if different):
-    - class_index (int)
-    - title (str)
-    - description (str)
-    """
-    if not os.path.exists(csv_path):
-        raise FileNotFoundError(f"CSV not found at {csv_path}. Put Kaggle file there.")
-
-    df = pd.read_csv(csv_path)
-    # Normalize column names to lowercase and remove spaces
-    df.columns = df.columns.str.lower().str.replace(' ', '_')
-    # Inspect columns once manually to confirm
-    # print(df.head())
-
-    # Combine title + description into one text field
-    if "title" in df.columns and "description" in df.columns:
-        df["text"] = df["title"].astype(str) + " " + df["description"].astype(str)
-    elif "text" not in df.columns:
-        raise ValueError("CSV must have 'title' and 'description' or a 'text' column.")
-
-    # Map numeric labels to names
-    if "class_index" in df.columns:
-        df["label_id"] = df["class_index"]
-        df["label"] = df["class_index"].map(LABEL_MAP)
-    elif "class" in df.columns:
-        # Handle "Class" column (capitalized)
-        df["label_id"] = df["class"]
-        df["label"] = df["class"].map(LABEL_MAP)
+    if "Class Index" in df.columns:
+        label_col = "Class Index"
     elif "label" in df.columns:
-        # if already string labels, just copy
-        df["label_id"] = df["label"].astype("category").cat.codes
+        label_col = "label"
+    elif "class_index" in df.columns:
+        label_col = "class_index"
     else:
-        raise ValueError("CSV must have 'class_index' or 'label' column.")
+        raise ValueError(f"No label column found. Available columns: {list(df.columns)}")
 
-    return df
+    if "text" in df.columns:
+        text_col = "text"
+        df["text"] = df[text_col].fillna("")
+    elif "Title" in df.columns and "Description" in df.columns:
+        df["text"] = df["Title"].fillna("") + " " + df["Description"].fillna("")
+    elif "title" in df.columns and "description" in df.columns:
+        df["text"] = df["title"].fillna("") + " " + df["description"].fillna("")
+    else:
+        raise ValueError(f"No text columns found. Available columns: {list(df.columns)}")
 
-def get_train_val_test(
-    train_csv: str = "data/raw/train.csv",
-    test_csv: str = "data/raw/test.csv",
-    val_size: float = 0.2,
-    random_state: int = 42
-):
-    train_df = load_ag_news_csv(train_csv)
-    test_df = load_ag_news_csv(test_csv)
+    df = df.rename(columns={label_col: "label"})
+    return df[["text", "label"]]
+
+
+def get_train_test(train_path, test_path, convert_to_zero_based=False):
+    train_df = load_ag_news_csv(train_path)
+    test_df = load_ag_news_csv(test_path)
+
+    X_train = train_df["text"]
+    y_train = train_df["label"]
+
+    X_test = test_df["text"]
+    y_test = test_df["label"]
+
+    if convert_to_zero_based:
+        y_train = y_train - 1
+        y_test = y_test - 1
+
+    return X_train, y_train, X_test, y_test
+
+
+def get_train_val_test(train_path, test_path, val_size=0.2, random_state=42, convert_to_zero_based=False):
+    train_df = load_ag_news_csv(train_path)
+    test_df = load_ag_news_csv(test_path)
 
     X = train_df["text"]
-    y = train_df["label_id"]
+    y = train_df["label"]
+
+    if convert_to_zero_based:
+        y = y - 1
+        y_test = test_df["label"] - 1
+    else:
+        y_test = test_df["label"]
 
     X_train, X_val, y_train, y_val = train_test_split(
-        X, y,
-        test_size=val_size,
-        random_state=random_state,
-        stratify=y
+        X, y, test_size=val_size, random_state=random_state, stratify=y
     )
 
     X_test = test_df["text"]
-    y_test = test_df["label_id"]
 
     return X_train, X_val, X_test, y_train, y_val, y_test
-
-# src/data_loader.py
-def quick_split_stats(y_train, y_val, y_test):
-    import pandas as pd
-    return pd.DataFrame({
-        "train": pd.Series(y_train).value_counts().sort_index(),
-        "val": pd.Series(y_val).value_counts().sort_index(),
-        "test": pd.Series(y_test).value_counts().sort_index()
-    }).fillna(0).astype(int)
