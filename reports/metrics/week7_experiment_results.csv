@@ -1,0 +1,4 @@
+experiment,model,tfidf_params,accuracy,macro_f1
+svm_3000,LinearSVC,"{'ngram_range': (1, 2), 'max_features': 3000}",0.8985,0.8982081222601379
+logreg_3000,LogisticRegression,"{'ngram_range': (1, 2), 'max_features': 3000}",0.8962083333333334,0.896001791979975
+logreg_2000,LogisticRegression,"{'ngram_range': (1, 2), 'max_features': 2000}",0.8884583333333333,0.8882433496566817
