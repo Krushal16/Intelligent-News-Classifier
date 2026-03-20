@@ -1,0 +1,4 @@
+week,model,accuracy,macro_f1,notes
+Week 5,best_model.pkl,0.9017,0.9015,Reproducible evaluation baseline
+Week 7,Experiment comparison,,,Controlled TF-IDF/model tuning
+Week 8,TF-IDF + LinearSVC,,,Final selected model (fill values after run)
