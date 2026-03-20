@@ -1,0 +1,10 @@
+technology,purpose
+Python,Programming language for project implementation
+Pandas,Data loading and manipulation
+Scikit-learn,"TF-IDF vectorization, model training, evaluation"
+Joblib,Model saving and loading
+Matplotlib,Confusion matrix plotting
+Seaborn,Visualization for evaluation outputs
+Streamlit,Web demo for news classification
+Jupyter Notebook,Experiment tracking and notebook-based evaluation
+GitHub,Version control and collaboration
