@@ -1,0 +1,2 @@
+best_experiment,best_model,best_accuracy,best_macro_f1
+svm_3000,LinearSVC,0.8985,0.8982081222601379
