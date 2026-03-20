@@ -11,7 +11,20 @@ sys.path.insert(0, str(project_root))
 from src.preprocess import clean_text
 
 MODEL_PATH = "models/best_model.pkl"
-LABEL_MAP = {1:"World", 2:"Sports", 3:"Business", 4:"Sci/Tech"}
+
+LABEL_MAP = {
+    1: "World",
+    2: "Sports",
+    3: "Business",
+    4: "Sci/Tech"
+}
+
+EXAMPLES = [
+    "World leaders met in Brussels to discuss international trade and climate policy.",
+    "The team secured a dramatic victory after scoring in the final minute.",
+    "The company reported strong earnings and higher-than-expected quarterly revenue.",
+    "Researchers developed a new AI model for faster language understanding."
+]
 
 @st.cache_resource
 def load_model():
@@ -20,39 +33,29 @@ def load_model():
     except FileNotFoundError:
         return None
 
-st.title("Intelligent News Classifier (AG News)")
+st.title("Intelligent News Classifier")
+st.caption("AG News category prediction demo")
 
 model = load_model()
+
 if model is None:
-    st.error("best_model.pkl not found. Run: python run_pipeline.py")
+    st.error("Model not found. Please train or copy best_model.pkl first.")
 else:
-    st.caption(f"Model loaded: {MODEL_PATH}")
+    st.caption(f"Loaded model: {MODEL_PATH}")
 
-    example1 = "Stock markets rose today after strong earnings from major companies."
-    example2 = "The team secured a late victory in the championship match."
-    example3 = "Scientists announced a new breakthrough in AI research."
-
-    choice = st.selectbox("Load an example (optional):", ["(none)", "Example 1", "Example 2", "Example 3"])
-    if choice == "Example 1":
-        text = st.text_area("Enter news text:", value=example1, height=180)
-    elif choice == "Example 2":
-        text = st.text_area("Enter news text:", value=example2, height=180)
-    elif choice == "Example 3":
-        text = st.text_area("Enter news text:", value=example3, height=180)
-    else:
-        text = st.text_area("Enter news text:", height=180)
+    selected = st.selectbox("Choose an example or enter your own text:", [""] + EXAMPLES)
+    user_input = st.text_area("News text", value=selected, height=180)
 
     if st.button("Predict"):
-        if not text.strip():
-            st.warning("Enter some text.")
+        if not user_input.strip():
+            st.warning("Please enter some text.")
         else:
-            pred_id = model.predict([clean_text(text)])[0]
-            pred_name = LABEL_MAP.get(pred_id, str(pred_id))
+            cleaned = clean_text(user_input)
+            pred_id = model.predict([cleaned])[0]
+            pred_name = LABEL_MAP.get(int(pred_id), str(pred_id))
 
-            msg = f"Predicted category: {pred_name}"
+            st.success(f"Predicted category: {pred_name}")
 
             if hasattr(model, "predict_proba"):
-                conf = model.predict_proba([clean_text(text)]).max()
-                msg += f" (confidence: {conf:.2f})"
-
-            st.success(msg)
+                conf = model.predict_proba([cleaned]).max()
+                st.caption(f"Confidence: {conf:.2f}")
