@@ -20,10 +20,10 @@ LABEL_MAP = {
 }
 
 EXAMPLES = [
-    "World leaders met in Brussels to discuss international trade and climate policy.",
-    "The team secured a dramatic victory after scoring in the final minute.",
-    "The company reported strong earnings and higher-than-expected quarterly revenue.",
-    "Researchers developed a new AI model for faster language understanding."
+    "Global leaders gathered in Geneva for international climate talks.",
+    "The team won the championship after a dramatic penalty shootout.",
+    "Apple reported record quarterly revenue driven by iPhone sales.",
+    "Scientists developed a new AI model capable of predicting protein structures."
 ]
 
 @st.cache_resource
@@ -33,18 +33,19 @@ def load_model():
     except FileNotFoundError:
         return None
 
+st.set_page_config(page_title="Intelligent News Classifier", layout="centered")
 st.title("Intelligent News Classifier")
-st.caption("AG News category prediction demo")
+st.caption("Classifies news articles into: World | Sports | Business | Sci/Tech")
 
 model = load_model()
 
 if model is None:
-    st.error("Model not found. Please train or copy best_model.pkl first.")
+    st.error("Model not found. Please run the pipeline first.")
 else:
-    st.caption(f"Loaded model: {MODEL_PATH}")
+    st.caption(f"Model loaded: {MODEL_PATH}")
 
-    selected = st.selectbox("Choose an example or enter your own text:", [""] + EXAMPLES)
-    user_input = st.text_area("News text", value=selected, height=180)
+    selected = st.selectbox("Choose an example (optional):", [""] + EXAMPLES)
+    user_input = st.text_area("Enter news text:", value=selected, height=180)
 
     if st.button("Predict"):
         if not user_input.strip():
@@ -59,3 +60,6 @@ else:
             if hasattr(model, "predict_proba"):
                 conf = model.predict_proba([cleaned]).max()
                 st.caption(f"Confidence: {conf:.2f}")
+
+    st.markdown("---")
+    st.caption("AML-2403 Capstone | Intelligent News Classifier | AG News Dataset")
