@@ -1,0 +1,2 @@
+model,accuracy,macro_f1
+TF-IDF + LinearSVC,0.8925,0.8922635473176423
