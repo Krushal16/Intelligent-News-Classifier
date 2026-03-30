@@ -4,6 +4,11 @@ import streamlit as st
 import joblib
 from pathlib import Path
 
+st.markdown("### How to use")
+st.markdown("1. Choose an example or enter your own news text.")
+st.markdown("2. Click Predict.")
+st.markdown("3. The app returns one of four categories: World, Sports, Business, or Sci/Tech.")
+
 project_root = Path(__file__).resolve().parents[1]
 # Prefer insert at front so imports from project root take precedence
 sys.path.insert(0, str(project_root))
