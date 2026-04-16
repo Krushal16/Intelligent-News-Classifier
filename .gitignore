@@ -9,7 +9,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 # Data (keep raw data local)
-data/raw/
+# data/raw/
 data/processed/
 
 # Trained models
