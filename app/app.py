@@ -47,7 +47,6 @@ model = load_model()
 if model is None:
     st.error("Model not found. Please run the pipeline first.")
 else:
-    st.caption(f"Model loaded: {MODEL_PATH}")
 
     selected = st.selectbox("Choose an example (optional):", [""] + EXAMPLES)
     user_input = st.text_area("Enter news text:", value=selected, height=180)
