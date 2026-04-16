@@ -37,7 +37,12 @@ def tune_and_save_best(
     test_csv="data/raw/test.csv",
     best_model_path="models/best_model.pkl"
 ):
-    X_train, X_val, X_test, y_train, y_val, y_test = get_train_val_test()
+    
+    X_train, X_val, X_test, y_train, y_val, y_test = get_train_val_test(
+        train_csv,
+        test_csv
+    )
+    
     X_train = apply_cleaning(X_train)
     X_val = apply_cleaning(X_val)
     X_test = apply_cleaning(X_test)
@@ -85,7 +90,7 @@ def tune_and_save_best(
 
     # Save best model
     os.makedirs("models", exist_ok=True)
-    joblib.dump(best_model, "models/best_model.pkl")
+    joblib.dump(best_model, best_model_path)
 
     # Save test metrics
     pd.DataFrame([{
